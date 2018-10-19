@@ -1,0 +1,14 @@
+version: '2'
+services:
+  youth-admin:
+    image: youth/admin
+    ports:
+      - "8080:8080"
+    environment:
+      - spring.profiles.active=dev
+  youth-api:
+    image: youth/api
+    ports:
+      - "8081:8081"
+    environment:
+      - spring.profiles.active=dev

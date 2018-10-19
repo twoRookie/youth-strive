@@ -1,0 +1,8 @@
+rootProject.name = 'youth-strive'
+include ':youth-common'
+include ':youth-admin'
+include ':youth-api'
+
+project(':youth-common').projectDir = "$rootDir/youth-common" as File
+project(':youth-admin').projectDir = "$rootDir/youth-admin" as File
+project(':youth-api').projectDir = "$rootDir/youth-api" as File

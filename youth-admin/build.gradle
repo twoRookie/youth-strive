@@ -1,0 +1,103 @@
+
+description = ''
+dependencies {
+  compile project(':youth-common')
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version:'2.0.5.RELEASE'
+    compile(group: 'org.quartz-scheduler', name: 'quartz', version:'2.3.0') {
+exclude(module: 'c3p0')
+exclude(module: 'HikariCP-java6')
+    }
+    compile group: 'org.apache.shiro', name: 'shiro-core', version:'1.4.0'
+    compile group: 'org.apache.shiro', name: 'shiro-spring', version:'1.4.0'
+    compile group: 'com.github.axet', name: 'kaptcha', version:'0.0.9'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version:'2.7.0'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version:'2.7.0'
+    compile group: 'com.qiniu', name: 'qiniu-java-sdk', version:'[7.2.0, 7.2.99]'
+    compile group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version:'2.5.0'
+    compile(group: 'com.qcloud', name: 'cos_api', version:'4.4') {
+exclude(module: 'slf4j-log4j12')
+    }
+}
+
+
+def projectName = 'youth-admin'
+
+clean {
+    delete 'dist'
+    delete 'build'
+    delete 'zipFile'
+}
+
+task zipH(type: Zip) {
+    from "dist/"
+    destinationDir = file("zipFile")
+    baseName "${projectName}"
+}
+
+jar {
+
+    from sourceSets.main.allJava
+    destinationDir file('dist/apps')
+    exclude 'static/**', '*.yml', '*.jar'
+    archiveName "${projectName}.jar"
+
+    doLast {
+
+        copy {
+            from file('src/main/resources/')
+            into 'dist/conf'
+            exclude 'buildconf', 'map/**', 'mock', 'static/**'
+            if (project.hasProperty('env')) {
+                String env = project.getProperty('env');
+                switch (env) {
+                    case ['t', 'test']:
+                        exclude 'application-dev.yml', 'application.yml', 'application-prod.yml'
+                        rename("application-test.yml", "application.yml")
+                        break
+                    case ['d', 'dev']:
+                        exclude 'application-test.yml', 'application.yml', 'application-prod.yml'
+                        rename("application-dev.yml", "application.yml")
+                        break
+                    case ['p', 'prod']:
+                        exclude 'application-test.yml', 'application-dev.yml', 'application.yml'
+                        rename("application-prod.yml", "application.yml")
+                        break
+                }
+            } else { // 默认是生产环境
+                exclude 'application-test.yml', 'application-dev.yml', 'application.yml'
+                rename("application-prod.yml", "application.yml")
+            }
+        }
+
+        copy {
+            from file('src/main/resources/static/disted/')
+            into 'dist/static/'
+        }
+
+
+        copy {
+            from file('src/main/resources/buildconf')
+            into 'dist/conf'
+        }
+
+        copy {
+            from file('.').listFiles().findAll{File f -> (f.name.endsWith('.sh'))}
+            into 'dist'
+        }
+
+        copy {
+            from file('script')
+            into 'dist/script'
+        }
+
+        copy {
+            from configurations.runtime
+            into 'dist/lib'
+        }
+    }
+
+}
+
+build {
+    jar
+}

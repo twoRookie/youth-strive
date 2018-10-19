@@ -1,0 +1,9 @@
+
+apply plugin: 'war'
+
+description = ''
+dependencies {
+  compile project(':youth-common')
+    compile group: 'io.springfox', name: 'springfox-swagger2', version:'2.7.0'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version:'2.7.0'
+}
