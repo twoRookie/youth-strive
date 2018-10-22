@@ -14,7 +14,7 @@
  * the License.
  */
 
-package io.renren.service;
+package io.youth.service;
 
 
 import io.youth.datasources.DataSourceNames;

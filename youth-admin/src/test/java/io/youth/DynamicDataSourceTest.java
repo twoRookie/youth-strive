@@ -1,7 +1,7 @@
-package io.renren;
+package io.youth;
 
 
-import io.renren.service.DataSourceTestService;
+import io.youth.service.DataSourceTestService;
 import io.youth.modules.sys.entity.SysUserEntity;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.junit.Test;

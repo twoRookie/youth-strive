@@ -1,4 +1,4 @@
-package io.renren;
+package io.youth;
 
 import io.youth.common.utils.RedisUtils;
 import io.youth.modules.sys.entity.SysUserEntity;
